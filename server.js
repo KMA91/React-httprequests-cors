@@ -4,11 +4,25 @@ var bodyParser = require("body-parser")
 
 var app = express()
 
+console.log(app);
+
 app.use(cors())
 app.use(bodyParser.json())
 
+app.get("/", (req, res) => {
+  // console.log('successful');
+  res
+    .status(200)
+    .json({
+      statusCode: "200",
+      payload: {
+        message: "Succcess!"
+      }
+    })
+})
+
 app.post("/logins", function(request, response) {
-    if(loginIsCorrect()) 
+    if(loginIsCorrect())
         acceptLogin()
     else
         rejectLogin()
@@ -45,5 +59,8 @@ app.post("/logins", function(request, response) {
     }
 })
 
+app.listen(5000, function () {
+  console.log('Example app listening on port 5000 !');
+});
 
 module.exports = app
