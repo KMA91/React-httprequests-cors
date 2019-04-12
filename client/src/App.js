@@ -26,7 +26,7 @@ class App extends Component {
     const username = this.state.username,
           password = this.state.password;
     axios
-      .post("http://localhost:5000/logins",{
+      .post("/logins", {
         username: username,
         password: password
       })
