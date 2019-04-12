@@ -1,14 +1,14 @@
 var express = require("express")
-var cors = require("cors")
+// var cors = require("cors")
 var bodyParser = require("body-parser")
 
 var app = express()
 
-app.use(cors())
+// app.use(cors())
 app.use(bodyParser.json())
 
 app.post("/logins", function(request, response) {
-    if(loginIsCorrect()) 
+    if(loginIsCorrect())
         acceptLogin()
     else
         rejectLogin()
@@ -45,5 +45,6 @@ app.post("/logins", function(request, response) {
     }
 })
 
-
 module.exports = app
+
+app.listen(5000);
