@@ -1,23 +1,6 @@
 import React, { Component } from 'react';
-import './App.css';
 import request from 'superagent';
 import axios from 'axios';
-import { BrowserRouter, Route } from 'react-router-dom';
-
-// import Login from './Login';
-// import Dashboard from './Dashboard';
-
-const fakeAuthCentralState = {
-   isAuthenticated: false,
-   // authenticate(callback) {
-   //    this.isAuthenticated = true;
-   //    setTimeout(callback, 300);
-   // },
-   // signout(callback) {
-   //    this.isAuthenticated = false;
-   //    setTimeout(callback, 300);
-   // }
-};
 
 class Login extends Component {
 
@@ -47,10 +30,7 @@ class Login extends Component {
         username: username,
         password: password
       })
-      .then(res => {
-
-        console.log(res);
-      })
+      .then(res => console.log(res))
       .catch(err => console.log(err.response))
   }
 
@@ -103,41 +83,4 @@ class Login extends Component {
   }
 }
 
-class Dashboard extends Component {
-  constructor() {
-    super()
-  }
-
-  render() {
-    return (
-      <div className="container">
-        <h1> Hello </h1>
-      </div>
-    )
-  }
-}
-
-class App extends Component {
-
-  constructor(props) {
-    super(props)
-
-  }
-
-  componentWillMount(){
-    console.log('hello');
-  }
-
-  render() {
-    return (
-      <div className="App">
-        <BrowserRouter>
-          <Route exact path="/" component = { Login } />
-          <Route exact path="/Dashboard" component = { Dashboard } />
-        </BrowserRouter>
-      </div>
-    );
-  }
-}
-
-export default App;
+export default Login;
