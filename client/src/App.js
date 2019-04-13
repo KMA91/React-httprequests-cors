@@ -2,21 +2,13 @@ import React, { Component } from 'react';
 import './App.css';
 import request from 'superagent';
 import axios from 'axios';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 
 // import Login from './Login';
 // import Dashboard from './Dashboard';
 
 const fakeAuthCentralState = {
-   isAuthenticated: false,
-   // authenticate(callback) {
-   //    this.isAuthenticated = true;
-   //    setTimeout(callback, 300);
-   // },
-   // signout(callback) {
-   //    this.isAuthenticated = false;
-   //    setTimeout(callback, 300);
-   // }
+   isAuthenticated: false
 };
 
 class Login extends Component {
@@ -25,7 +17,8 @@ class Login extends Component {
     super();
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      errorMessage: null,
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -48,10 +41,10 @@ class Login extends Component {
         password: password
       })
       .then(res => {
-
-        console.log(res);
+        // console.log(res);
+          fakeAuthCentralState.isAuthenticated = true;
       })
-      .catch(err => console.log(err.response))
+      .catch(err => this.setState({ errorMessage: err.response.data.payload.message }))
   }
 
   logInUserSuperAgent = event => {
@@ -90,6 +83,7 @@ class Login extends Component {
     return (
       <div className="App">
         <h1>Please login.</h1>
+        <div>{ this.state.errorMessage }</div>
         <p>Username: john.doe, Password: Qwerty</p>
         <form>
           <input type="text" name="username" placeholder="Username" onChange={this.handleChange}/>
@@ -122,10 +116,6 @@ class App extends Component {
   constructor(props) {
     super(props)
 
-  }
-
-  componentWillMount(){
-    console.log('hello');
   }
 
   render() {
