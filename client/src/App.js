@@ -2,21 +2,13 @@ import React, { Component } from 'react';
 import './App.css';
 import request from 'superagent';
 import axios from 'axios';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 
 // import Login from './Login';
 // import Dashboard from './Dashboard';
 
 const fakeAuthCentralState = {
-   isAuthenticated: false,
-   // authenticate(callback) {
-   //    this.isAuthenticated = true;
-   //    setTimeout(callback, 300);
-   // },
-   // signout(callback) {
-   //    this.isAuthenticated = false;
-   //    setTimeout(callback, 300);
-   // }
+   isAuthenticated: false
 };
 
 class Login extends Component {
@@ -25,7 +17,8 @@ class Login extends Component {
     super();
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      errorMessage: null,
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -48,10 +41,11 @@ class Login extends Component {
         password: password
       })
       .then(res => {
-
-        console.log(res);
+        // console.log(res);
+          fakeAuthCentralState.isAuthenticated = true;
+          this.props.history.push("/Dashboard");
       })
-      .catch(err => console.log(err.response))
+      .catch(err => this.setState({ errorMessage: err.response.data.payload.message, password: "" }))
   }
 
   logInUserSuperAgent = event => {
@@ -63,8 +57,12 @@ class Login extends Component {
         username: username,
         password: password
       })
-      .then(res => console.log(res))
-      .catch(err => console.log(err.response))
+      .then(res => {
+        // console.log(res);
+          fakeAuthCentralState.isAuthenticated = true;
+          this.props.history.push("/Dashboard");
+      })
+      .catch(err => this.setState({ errorMessage: err.response.data.payload.message, password: "" }))
   }
 
   logInUserFetch = event => {
@@ -82,15 +80,23 @@ class Login extends Component {
       },
       body: JSON.stringify(userLogin)
     })
-      .then(res => console.log(res))
-      .catch(err => console.log(err))
+    .then(res => {
+      // console.log(res);
+        fakeAuthCentralState.isAuthenticated = true;
+        this.props.history.push("/Dashboard");
+    })
+      .catch(err => this.setState({ errorMessage: err.response.data.payload.message, password: "" }))
   }
+
+  navToDashboard = () => this.props.history.push("/Dashboard");
 
   render() {
     return (
       <div className="App">
         <h1>Please login.</h1>
+        <div>{ this.state.errorMessage }</div>
         <p>Username: john.doe, Password: Qwerty</p>
+        <button onClick={this.navToDashboard}>Dashboard (This won't work unless you're logged in)</button>
         <form>
           <input type="text" name="username" placeholder="Username" onChange={this.handleChange}/>
           <input type="password" name="password" placeholder="Password" onChange={this.handleChange}/>
@@ -104,16 +110,29 @@ class Login extends Component {
 }
 
 class Dashboard extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
+    // console.log(fakeAuthCentralState);
+    if(!fakeAuthCentralState.isAuthenticated) {
+      this.props.history.push("/");
+    }
+  }
+
+  navToLogin = () => this.props.history.push("/");
+
+  logout = () => {
+    fakeAuthCentralState.isAuthenticated = false;
+    this.props.history.push("/");
   }
 
   render() {
-    return (
-      <div className="container">
+      return (
+        <div className="container">
         <h1> Hello </h1>
-      </div>
-    )
+        <button onClick={this.navToLogin}>Login Page</button>
+        <button onClick={this.logout}>Log out</button>
+        </div>
+      )
   }
 }
 
@@ -122,10 +141,6 @@ class App extends Component {
   constructor(props) {
     super(props)
 
-  }
-
-  componentWillMount(){
-    console.log('hello');
   }
 
   render() {
