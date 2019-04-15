@@ -43,8 +43,9 @@ class Login extends Component {
       .then(res => {
         // console.log(res);
           fakeAuthCentralState.isAuthenticated = true;
+          this.props.history.push("/Dashboard");
       })
-      .catch(err => this.setState({ errorMessage: err.response.data.payload.message }))
+      .catch(err => this.setState({ errorMessage: err.response.data.payload.message, password: "" }))
   }
 
   logInUserSuperAgent = event => {
@@ -56,8 +57,12 @@ class Login extends Component {
         username: username,
         password: password
       })
-      .then(res => console.log(res))
-      .catch(err => console.log(err.response))
+      .then(res => {
+        // console.log(res);
+          fakeAuthCentralState.isAuthenticated = true;
+          this.props.history.push("/Dashboard");
+      })
+      .catch(err => this.setState({ errorMessage: err.response.data.payload.message, password: "" }))
   }
 
   logInUserFetch = event => {
@@ -75,9 +80,15 @@ class Login extends Component {
       },
       body: JSON.stringify(userLogin)
     })
-      .then(res => console.log(res))
-      .catch(err => console.log(err))
+    .then(res => {
+      // console.log(res);
+        fakeAuthCentralState.isAuthenticated = true;
+        this.props.history.push("/Dashboard");
+    })
+      .catch(err => this.setState({ errorMessage: err.response.data.payload.message, password: "" }))
   }
+
+  navToDashboard = () => this.props.history.push("/Dashboard");
 
   render() {
     return (
@@ -85,6 +96,7 @@ class Login extends Component {
         <h1>Please login.</h1>
         <div>{ this.state.errorMessage }</div>
         <p>Username: john.doe, Password: Qwerty</p>
+        <button onClick={this.navToDashboard}>Dashboard (This won't work unless you're logged in)</button>
         <form>
           <input type="text" name="username" placeholder="Username" onChange={this.handleChange}/>
           <input type="password" name="password" placeholder="Password" onChange={this.handleChange}/>
@@ -98,16 +110,29 @@ class Login extends Component {
 }
 
 class Dashboard extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
+    // console.log(fakeAuthCentralState);
+    if(!fakeAuthCentralState.isAuthenticated) {
+      this.props.history.push("/");
+    }
+  }
+
+  navToLogin = () => this.props.history.push("/");
+
+  logout = () => {
+    fakeAuthCentralState.isAuthenticated = false;
+    this.props.history.push("/");
   }
 
   render() {
-    return (
-      <div className="container">
+      return (
+        <div className="container">
         <h1> Hello </h1>
-      </div>
-    )
+        <button onClick={this.navToLogin}>Login Page</button>
+        <button onClick={this.logout}>Log out</button>
+        </div>
+      )
   }
 }
 
